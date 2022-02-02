@@ -23,9 +23,6 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
-
-KEYBRICK = true
-
 LevelMaker = Class{}
 
 --[[
@@ -115,19 +112,12 @@ function LevelMaker.createMap(level)
                 b.tier = solidTier
             end 
 
-            if x == math.floor(numCols / 2) then
-                KEYBRICK = false
-                table.insert(brick, keybrick)
-                ::continue::
-
             table.insert(bricks, b)
 
             -- Lua's version of the 'continue' statement
             ::continue::
         end
     end 
-
-    KEYBRICK = true
 
     -- in the event we didn't generate any bricks, try again
     if #bricks == 0 then

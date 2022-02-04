@@ -20,6 +20,8 @@ PlayState = Class{__includes = BaseState}
     We initialize what's in our PlayState via a state table that we pass between
     states as we go from playing to serving.
 ]]
+
+
 function PlayState:enter(params)
     self.paddle = params.paddle
     self.skin = params.skin
@@ -38,6 +40,8 @@ function PlayState:enter(params)
     
     self.balls[1].dx = math.random(-200, 200)
     self.balls[1].dy = math.random(-50, -60)
+
+    ballpluspu = PowerUp(10, 10, 9)
 end
 
 function PlayState:update(dt)
@@ -62,11 +66,36 @@ function PlayState:update(dt)
         self.NBalls = self.NBalls + 1
         
         table.insert(self.balls, ball)
+
         return
     end
 
     -- update positions based on velocity
     self.paddle:update(dt)
+
+    if ballpluspu.inPlay then
+        ballpluspu:update(dt)
+    end
+
+
+    if ballpluspu.y >= VIRTUAL_HEIGHT then
+        ballpluspu.inPlay = false
+    end
+
+    if ballpluspu:collides(self.paddle) and ballpluspu.inPlay and ballpluspu.type == 9 then
+        local ball = Ball()
+        
+        ball.skin = math.random(7)
+        ball.x = self.paddle.x + (self.paddle.width / 2) - 4
+        ball.y = self.paddle.y - 8
+        ball.dx = math.random(-200, 200)
+        ball.dy = math.random(-50, -60)
+
+        self.NBalls = self.NBalls + 1
+        
+        table.insert(self.balls, ball)
+        ballpluspu.inPlay = false
+    end
 
     -- update all balls
     for i = 1, self.NBalls do
@@ -203,6 +232,7 @@ function PlayState:update(dt)
 
             if self.NBalls > 1 then
                 self.NBalls = math.max(1, self.NBalls - 1)
+                table.remove(self.balls, i)
                 break
             end
 
@@ -248,6 +278,10 @@ function PlayState:render()
     -- render all particle systems
     for k, brick in pairs(self.bricks) do
         brick:renderParticles()
+    end
+
+    if ballpluspu.inPlay then
+        ballpluspu:render()
     end
 
     self.paddle:render()

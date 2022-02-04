@@ -30,15 +30,19 @@ function ServeState:enter(params)
 
     print("Skinie1: " .. tostring(self.skin))
     -- init new ball (random color for fun)
-    self.ball = Ball()
-    self.ball.skin = math.random(7)
+    self.balls = {}
+
+    local ball = Ball()
+    ball.skin = math.random(7)
+    
+    table.insert(self.balls, ball)
 end
 
 function ServeState:update(dt)
     -- have the ball track the player
     self.paddle:update(dt)
-    self.ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-    self.ball.y = self.paddle.y - 8
+    self.balls[1].x = self.paddle.x + (self.paddle.width / 2) - 4
+    self.balls[1].y = self.paddle.y - 8
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         -- pass in all important state info to the PlayState
@@ -50,7 +54,7 @@ function ServeState:update(dt)
             health = self.health,
             score = self.score,
             highScores = self.highScores,
-            ball = self.ball,
+            balls = self.balls,
             level = self.level,
             recoverPoints = self.recoverPoints
         })
@@ -63,7 +67,7 @@ end
 
 function ServeState:render()
     self.paddle:render()
-    self.ball:render()
+    self.balls[1]:render()
 
     for k, brick in pairs(self.bricks) do
         brick:render()

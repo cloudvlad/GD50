@@ -51,7 +51,7 @@ function PaddleSelectState:update(dt)
             size = 2,
             bricks = LevelMaker.createMap(1),
             health = 3,
-            score = 0,
+            score = 4800,
             highScores = self.highScores,
             level = 1,
             recoverPoints = 5000

@@ -160,3 +160,22 @@ end
     Different functon for every different powerup
 
 ]]--
+
+
+function PuBallPlus(paddle, balls)
+    local ball = Ball()
+        
+    ball.skin = math.random(7)
+    ball.x = paddle.x + (paddle.width / 2) - 4
+    ball.y = paddle.y - 8
+    ball.dx = math.random(-200, 200)
+    ball.dy = math.random(-50, -60)
+
+    table.insert(balls, ball)
+
+    return balls
+end
+
+function PuKey()
+    return true
+end

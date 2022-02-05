@@ -33,7 +33,6 @@ function PlayState:enter(params)
     self.balls = params.balls
     self.level = params.level
     self.recoverPoints = params.recoverPoints
-    self.NBalls = 1
 
     print("Skinie2: " .. tostring(self.skin))
     -- give ball random starting velocity
@@ -56,18 +55,7 @@ function PlayState:update(dt)
     elseif love.keyboard.wasPressed('space') then
         self.paused = true
         gSounds['pause']:play()
-        local ball = Ball()
-        
-        ball.skin = math.random(7)
-        ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-        ball.y = self.paddle.y - 8
-        ball.dx = math.random(-200, 200)
-        ball.dy = math.random(-50, -60)
-
-        self.NBalls = self.NBalls + 1
-        
-        table.insert(self.balls, ball)
-
+        self.balls = PuBallPlus(self.paddle, self.balls)
         return
     end
 
@@ -85,27 +73,17 @@ function PlayState:update(dt)
 
     if ballpluspu:collides(self.paddle) and ballpluspu.inPlay then
         if ballpluspu.type == 9 then
-            local ball = Ball()
-            
-            ball.skin = math.random(7)
-            ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-            ball.y = self.paddle.y - 8
-            ball.dx = math.random(-200, 200)
-            ball.dy = math.random(-50, -60)
-
-            self.NBalls = self.NBalls + 1
-            
-            table.insert(self.balls, ball)
+            self.balls = PuBallPlus(self.paddle, self.balls)
             ballpluspu.inPlay = false
         end
     end
 
     -- update all balls
-    for i = 1, self.NBalls do
+    for i = 1, #self.balls do
         self.balls[i]:update(dt)
     end
 
-    for i = 1, self.NBalls do
+    for i = 1, #self.balls do
         if self.balls[i]:collides(self.paddle) then
             -- raise ball above paddle in case it goes below it, then reverse dy
             self.balls[i].y = self.paddle.y - 8
@@ -133,7 +111,7 @@ function PlayState:update(dt)
 
         -- only check collision if we're in play
 
-        for i = 1, self.NBalls do
+        for i = 1, #self.balls do
             if brick.inPlay and self.balls[i]:collides(brick) then
 
                 -- add to score
@@ -230,11 +208,10 @@ function PlayState:update(dt)
     end
 
     -- if ball goes below bounds, revert to serve state and decrease health
-    for i = 1, self.NBalls do
+    for i = 1, #self.balls do
         if self.balls[i].y >= VIRTUAL_HEIGHT then
 
-            if self.NBalls > 1 then
-                self.NBalls = math.max(1, self.NBalls - 1)
+            if #self.balls > 1 then
                 table.remove(self.balls, i)
                 break
             end
@@ -287,7 +264,7 @@ function PlayState:render()
     self.paddle:render()
     keybrick:render()
     
-    for i = 1, self.NBalls do
+    for i = 1, #self.balls do
         self.balls[i]:render()
     end
 

@@ -13,7 +13,7 @@
 PowerUp = Class{}
 
 -- Take brick x and y
-function PowerUp:init(bx, by, type)
+function PowerUp:init(bx, by, type, set)
     -- simple positional and dimensional variables
     self.width = 16
     self.height = 16
@@ -22,7 +22,7 @@ function PowerUp:init(bx, by, type)
     self.y = by
 
     self.type = type
-    self.inPlay = true
+    self.inPlay = set
     -- these variables are for keeping track of our velocity on both the
     -- X and Y axis, since the ball can move in two dimensions
     self.dy = 20

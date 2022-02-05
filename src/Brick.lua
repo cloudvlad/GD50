@@ -127,6 +127,8 @@ function Brick:hit()
         gSounds['brick-hit-1']:stop()
         gSounds['brick-hit-1']:play()
     end
+
+    return false
 end
 
 function Brick:update(dt)

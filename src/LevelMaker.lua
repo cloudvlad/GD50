@@ -23,9 +23,8 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
-KEYBRICK = math.random(1, 2) % 2 == true
 
--- keybrick = 
+SET_KEY = false
 
 LevelMaker = Class{}
 
@@ -37,7 +36,8 @@ LevelMaker = Class{}
 ]]
 function LevelMaker.createMap(level)
     local bricks = {}
-
+    keybrick = math.random(1, 4) % 2 == 0
+    
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
 
@@ -89,16 +89,34 @@ function LevelMaker.createMap(level)
                 skipFlag = not skipFlag
             end
 
-            b = Brick(
-                -- x-coordinate
-                (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
-                * 32                    -- multiply by 32, the brick width
-                + 8                     -- the screen should have 8 pixels of padding; we can fit 13 cols + 16 pixels total
-                + (13 - numCols) * 16,  -- left-side padding for when there are fewer than 13 columns
-                
-                -- y-coordinate
-                y * 16                  -- just use y * 16, since we need top padding anyway
-            )
+            
+
+            if keybrick and x == math.floor(numCols / 2) then
+                b = KeyBrick(
+                    -- x-coordinate
+                    (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
+                    * 32                    -- multiply by 32, the brick width
+                    + 8                     -- the screen should have 8 pixels of padding; we can fit 13 cols + 16 pixels total
+                    + (13 - numCols) * 16,  -- left-side padding for when there are fewer than 13 columns
+                    
+                    -- y-coordinate
+                    y * 16                  -- just use y * 16, since we need top padding anyway
+                )
+                SET_KEY = true
+                keybrick = false
+            else
+                b = Brick(
+                    -- x-coordinate
+                    (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
+                    * 32                    -- multiply by 32, the brick width
+                    + 8                     -- the screen should have 8 pixels of padding; we can fit 13 cols + 16 pixels total
+                    + (13 - numCols) * 16,  -- left-side padding for when there are fewer than 13 columns
+                    
+                    -- y-coordinate
+                    y * 16                  -- just use y * 16, since we need top padding anyway
+                )
+            end
+
 
             -- if we're alternating, figure out which color/tier we're on
             if alternatePattern and alternateFlag then
@@ -128,6 +146,7 @@ function LevelMaker.createMap(level)
     if #bricks == 0 then
         return self.createMap(level)
     else
+        table.insert(bricks, b)
         return bricks
     end
 end

@@ -16,8 +16,43 @@
 
 KeyBrick = Class{}
 
+-- some of the colors in our palette (to be used with particle systems)
+paletteColors = {
+    -- blue
+    [1] = {
+        ['r'] = 99,
+        ['g'] = 155,
+        ['b'] = 255
+    },
+    -- green
+    [2] = {
+        ['r'] = 106,
+        ['g'] = 190,
+        ['b'] = 47
+    },
+    -- red
+    [3] = {
+        ['r'] = 217,
+        ['g'] = 87,
+        ['b'] = 99
+    },
+    -- purple
+    [4] = {
+        ['r'] = 215,
+        ['g'] = 123,
+        ['b'] = 186
+    },
+    -- gold
+    [5] = {
+        ['r'] = 251,
+        ['g'] = 242,
+        ['b'] = 54
+    }
+}
+
 function KeyBrick:init(x, y)
     -- used for coloring and score calculation
+    self.tier = 0
     self.color = 1
     
     self.x = x
@@ -54,13 +89,13 @@ function KeyBrick:hit()
     -- it our self.color but with varying alpha; brighter for higher tiers, fading to 0
     -- over the particle's lifetime (the second color)
     self.psystem:setColors(
-        10 / 255,
-        10 / 255,
-        10 / 255,
-        100 / 255,
-        10 / 255,
-        10 / 255,
-        10 / 255,
+        paletteColors[self.color].r / 255,
+        paletteColors[self.color].g / 255,
+        paletteColors[self.color].b / 255,
+        55 * (self.tier + 1) / 255,
+        paletteColors[self.color].r / 255,
+        paletteColors[self.color].g / 255,
+        paletteColors[self.color].b / 255,
         0
     )
     self.psystem:emit(64)
@@ -69,11 +104,15 @@ function KeyBrick:hit()
     gSounds['brick-hit-2']:stop()
     gSounds['brick-hit-2']:play()
 
+
     -- play a second layer sound if the brick is destroyed
     if not self.inPlay then
         gSounds['brick-hit-1']:stop()
         gSounds['brick-hit-1']:play()
     end
+
+    self.inPlay = false
+    return true
 end
 
 function KeyBrick:update(dt)

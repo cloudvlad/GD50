@@ -33,6 +33,7 @@ function PlayState:enter(params)
     self.balls = params.balls
     self.level = params.level
     self.recoverPoints = params.recoverPoints
+    self.haveKey = false
 
     print("Skinie2: " .. tostring(self.skin))
     -- give ball random starting velocity
@@ -40,8 +41,8 @@ function PlayState:enter(params)
     self.balls[1].dx = math.random(-200, 200)
     self.balls[1].dy = math.random(-50, -60)
 
-    ballpluspu = PowerUp(10, 10, 9)
-    keybrick = KeyBrick(10, 10)
+    ballpluspu = PowerUp(10, 10, 9, false)
+    pu = PowerUp(10, 10, 10, false)
 end
 
 function PlayState:update(dt)
@@ -118,7 +119,17 @@ function PlayState:update(dt)
                 self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
                 -- trigger the brick's hit function, which removes it from play
-                brick:hit()
+                if brick:hit() then
+                    if not self.haveKey then
+                        brick.inPlay = true
+                        self.haveKey = true
+                    else
+                        ballpluspu = PowerUp(brick.x, brick.y + 8, 9, true)
+                    end
+                end
+
+                
+
                 print("-" .. self.recoverPoints)
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
@@ -262,7 +273,6 @@ function PlayState:render()
 
     ballpluspu:render()
     self.paddle:render()
-    keybrick:render()
     
     for i = 1, #self.balls do
         self.balls[i]:render()

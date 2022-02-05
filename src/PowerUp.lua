@@ -62,8 +62,8 @@ function PowerUp:update(dt)
 end
 
 function PowerUp:render()
-    -- gTexture is our global texture for all blocks
-    -- gBallFrames is a table of quads mapping to each individual ball skin in the texture
-    love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type],
+    if self.inPlay then
+        love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type],
         self.x, self.y)
+    end
 end

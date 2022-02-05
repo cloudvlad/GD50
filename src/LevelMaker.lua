@@ -23,7 +23,12 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
+KEYBRICK = math.random(1, 2) % 2 == true
+
+-- keybrick = 
+
 LevelMaker = Class{}
+
 
 --[[
     Creates a table of Bricks to be returned to the main game, with different

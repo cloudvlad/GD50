@@ -58,6 +58,12 @@ function GenerateQuadsBricks(atlas)
     return table.slice(GenerateQuads(atlas, 32, 16), 1, 21)
 end
 
+-- x, y = 160, 48
+-- w, h = 32, 16
+function GenerateQuadsKeyBrick(atlas)
+    return table.slice(GenerateQuads(atlas, 32, 16), 24, 24)[1]
+end
+
 --[[
     This function is specifically made to piece out the paddles from the
     sprite sheet. For this, we have to piece out the paddles a little more
@@ -144,3 +150,13 @@ function GenerateQuadsPowerUps(atlas)
 
     return quads
 end
+
+
+
+
+
+
+--[[
+    Different functon for every different powerup
+
+]]--

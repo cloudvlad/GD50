@@ -42,6 +42,7 @@ function PlayState:enter(params)
     self.balls[1].dy = math.random(-50, -60)
 
     ballpluspu = PowerUp(10, 10, 9)
+    keybrick = KeyBrick(10, 10)
 end
 
 function PlayState:update(dt)
@@ -82,19 +83,21 @@ function PlayState:update(dt)
         ballpluspu.inPlay = false
     end
 
-    if ballpluspu:collides(self.paddle) and ballpluspu.inPlay and ballpluspu.type == 9 then
-        local ball = Ball()
-        
-        ball.skin = math.random(7)
-        ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-        ball.y = self.paddle.y - 8
-        ball.dx = math.random(-200, 200)
-        ball.dy = math.random(-50, -60)
+    if ballpluspu:collides(self.paddle) and ballpluspu.inPlay then
+        if ballpluspu.type == 9 then
+            local ball = Ball()
+            
+            ball.skin = math.random(7)
+            ball.x = self.paddle.x + (self.paddle.width / 2) - 4
+            ball.y = self.paddle.y - 8
+            ball.dx = math.random(-200, 200)
+            ball.dy = math.random(-50, -60)
 
-        self.NBalls = self.NBalls + 1
-        
-        table.insert(self.balls, ball)
-        ballpluspu.inPlay = false
+            self.NBalls = self.NBalls + 1
+            
+            table.insert(self.balls, ball)
+            ballpluspu.inPlay = false
+        end
     end
 
     -- update all balls
@@ -280,11 +283,9 @@ function PlayState:render()
         brick:renderParticles()
     end
 
-    if ballpluspu.inPlay then
-        ballpluspu:render()
-    end
-
+    ballpluspu:render()
     self.paddle:render()
+    keybrick:render()
     
     for i = 1, self.NBalls do
         self.balls[i]:render()

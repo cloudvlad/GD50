@@ -16,40 +16,6 @@
 
 KeyBrick = Class{}
 
--- some of the colors in our palette (to be used with particle systems)
-paletteColors = {
-    -- blue
-    [1] = {
-        ['r'] = 99,
-        ['g'] = 155,
-        ['b'] = 255
-    },
-    -- green
-    [2] = {
-        ['r'] = 106,
-        ['g'] = 190,
-        ['b'] = 47
-    },
-    -- red
-    [3] = {
-        ['r'] = 217,
-        ['g'] = 87,
-        ['b'] = 99
-    },
-    -- purple
-    [4] = {
-        ['r'] = 215,
-        ['g'] = 123,
-        ['b'] = 186
-    },
-    -- gold
-    [5] = {
-        ['r'] = 251,
-        ['g'] = 242,
-        ['b'] = 54
-    }
-}
-
 function KeyBrick:init(x, y)
     -- used for coloring and score calculation
     self.tier = 0
@@ -88,14 +54,19 @@ function KeyBrick:hit()
     -- set the particle system to interpolate between two colors; in this case, we give
     -- it our self.color but with varying alpha; brighter for higher tiers, fading to 0
     -- over the particle's lifetime (the second color)
+
+    local r = 255
+    local g = 255
+    local b = 0
+    local a = 50
     self.psystem:setColors(
-        paletteColors[self.color].r / 255,
-        paletteColors[self.color].g / 255,
-        paletteColors[self.color].b / 255,
-        55 * (self.tier + 1) / 255,
-        paletteColors[self.color].r / 255,
-        paletteColors[self.color].g / 255,
-        paletteColors[self.color].b / 255,
+        r / 255,
+        g / 255,
+        b / 255,
+        a / 255,
+        255 / 255,
+        255 / 255,
+        255 / 255,
         0
     )
     self.psystem:emit(64)

@@ -21,7 +21,6 @@ PlayState = Class{__includes = BaseState}
     states as we go from playing to serving.
 ]]
 
-
 function PlayState:enter(params)
     self.paddle = params.paddle
     self.skin = params.skin
@@ -34,14 +33,14 @@ function PlayState:enter(params)
     self.level = params.level
     self.recoverPoints = params.recoverPoints
     self.haveKey = false
+    self.keyBrickHits = params.keyBrickHits
 
-    print("Skinie2: " .. tostring(self.skin))
     -- give ball random starting velocity
     
     self.balls[1].dx = math.random(-200, 200)
     self.balls[1].dy = math.random(-50, -60)
 
-    ballpluspu = PowerUp(10, 10, 9, false)
+    keybrick_pu = PowerUp(10, 10, 9, false)
     pu = PowerUp(10, 10, 10, false)
 end
 
@@ -62,21 +61,32 @@ function PlayState:update(dt)
 
     -- update positions based on velocity
     self.paddle:update(dt)
+    keybrick_pu:update(dt)
+    pu:update(dt)
 
-    if ballpluspu.inPlay then
-        ballpluspu:update(dt)
+
+    if keybrick_pu.y >= VIRTUAL_HEIGHT then
+        keybrick_pu.inPlay = false
     end
 
-
-    if ballpluspu.y >= VIRTUAL_HEIGHT then
-        ballpluspu.inPlay = false
+    if pu.y >= VIRTUAL_HEIGHT + 20 then
+        pu.inPlay = false
     end
 
-    if ballpluspu:collides(self.paddle) and ballpluspu.inPlay then
-        if ballpluspu.type == 9 then
+    if keybrick_pu:collides(self.paddle) and keybrick_pu.inPlay then
+        if keybrick_pu.type == 9 then
             self.balls = PuBallPlus(self.paddle, self.balls)
-            ballpluspu.inPlay = false
+            keybrick_pu.inPlay = false
         end
+    end
+
+    if pu:collides(self.paddle) and pu.inPlay then
+        self.haveKey = true
+        pu.inPlay = false
+    end
+
+    if self.haveKey then
+        SET_KEY = false
     end
 
     -- update all balls
@@ -120,21 +130,29 @@ function PlayState:update(dt)
 
                 -- trigger the brick's hit function, which removes it from play
                 if brick:hit() then
-                    if not self.haveKey then
+                    if not self.haveKey and SET_KEY then
                         brick.inPlay = true
-                        self.haveKey = true
+                        self.keyBrickHits = self.keyBrickHits + 1
+                        print("Hits: " .. tostring(self.keyBrickHits))
                     else
-                        ballpluspu = PowerUp(brick.x, brick.y + 8, 9, true)
+                        keybrick_pu = PowerUp(brick.x, brick.y, 9, true)
+                        brick.inPlay = false
+                    end
+                end
+
+                if self.keyBrickHits % NEEDED_HITS == 0 and SET_KEY then
+                    if not pu.inPlay then
+                        pu = PowerUp(math.random(32, VIRTUAL_WIDTH - 32), -16, 10, true)
                     end
                 end
 
                 
 
-                print("-" .. self.recoverPoints)
+                
+
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
 
-                    print("Recover" .. self.recoverPoints)
                     -- can't go above 3 health
                     self.health = math.min(3, self.health + 1)
 
@@ -163,7 +181,8 @@ function PlayState:update(dt)
                         score = self.score,
                         balls = self.balls,
                         highScores = self.highScores,
-                        recoverPoints = self.recoverPoints
+                        recoverPoints = self.recoverPoints,
+                        keyBrickHits = 1
                     })
                 end
 
@@ -245,7 +264,8 @@ function PlayState:update(dt)
                     score = self.score,
                     highScores = self.highScores,
                     level = self.level,
-                    recoverPoints = self.recoverPoints
+                    recoverPoints = self.recoverPoints,
+                    keyBrickHits = self.keyBrickHits
                 })
             end
         end
@@ -271,9 +291,10 @@ function PlayState:render()
         brick:renderParticles()
     end
 
-    ballpluspu:render()
+    keybrick_pu:render()
+    pu:render()
     self.paddle:render()
-    
+
     for i = 1, #self.balls do
         self.balls[i]:render()
     end

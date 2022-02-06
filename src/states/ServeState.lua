@@ -27,6 +27,7 @@ function ServeState:enter(params)
     self.highScores = params.highScores
     self.level = params.level
     self.recoverPoints = params.recoverPoints
+    self.keyBrickHits = params.keyBrickHits
 
     print("Skinie1: " .. tostring(self.skin))
     -- init new ball (random color for fun)
@@ -56,7 +57,8 @@ function ServeState:update(dt)
             highScores = self.highScores,
             balls = self.balls,
             level = self.level,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            keyBrickHits = self.keyBrickHits
         })
     end
 

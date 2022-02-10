@@ -24,8 +24,8 @@ Introduction to Game Development is a CS50 course, explaining fundamentals in ga
 ## :heavy_check_mark: Projects
 0. [Pong](https://github.com/cloudvlad/GD50/tree/pong)
 1. [Flappy Bird](https://github.com/cloudvlad/GD50/tree/flappy-bird)
-<!-- 2. [Breakout](https://github.com/cloudvlad/GD50/tree/breakout)
-3. [Match 3](https://github.com/cloudvlad/GD50/tree/match-3)
+2. [Breakout](https://github.com/cloudvlad/GD50/tree/breakout)
+<!-- 3. [Match 3](https://github.com/cloudvlad/GD50/tree/match-3)
 4. [Super Mario Bros](https://github.com/cloudvlad/GD50/tree/super-mario)
 5. [Legend of Zelda](https://github.com/cloudvlad/GD50/tree/legend)
 6. [Angry Birds](https://github.com/cloudvlad/GD50/tree/angry-birds)
